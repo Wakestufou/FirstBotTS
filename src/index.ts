@@ -4,7 +4,7 @@ import Logger from './utils/Logger';
 Logger.info('Lancement du programme...');
 
 Logger.info('Création du client...');
-const client = new ExtendedClient();
+export const client = new ExtendedClient();
 
 Logger.info('Client crée !');
 

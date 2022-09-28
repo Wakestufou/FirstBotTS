@@ -1,22 +1,7 @@
 import { Color } from '../utils/Colors';
-import { ExtendedClient } from '../structures/Client';
-import Events from '../utils/Events';
+import { Event } from '../structures/Event';
 import Logger from '../utils/Logger';
 
-export default class Ready implements Events {
-    isOnce(): boolean {
-        return true;
-    }
-
-    getName(): string {
-        return 'ready';
-    }
-
-    async execute(client: ExtendedClient) {
-        Logger.info(
-            `Ready ! Logged in as ${client.user?.tag}`,
-            'READY',
-            Color.FgGreen
-        );
-    }
-}
+export default new Event('ready', (client) => {
+    Logger.info('Bot is online ! ' + client.user?.tag, 'READY', Color.FgGreen);
+});
