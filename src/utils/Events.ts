@@ -1,4 +1,4 @@
-import { ExtendedClient } from 'src/structures/Client';
+import { ExtendedClient } from '../structures/Client';
 
 export default interface Event {
     getName(): string;

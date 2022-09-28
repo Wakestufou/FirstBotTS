@@ -1,5 +1,7 @@
-import { ExtendedClient } from 'src/structures/Client';
-import Events from 'src/utils/Events';
+import { Color } from '../utils/Colors';
+import { ExtendedClient } from '../structures/Client';
+import Events from '../utils/Events';
+import Logger from '../utils/Logger';
 
 export default class Ready implements Events {
     isOnce(): boolean {
@@ -11,6 +13,10 @@ export default class Ready implements Events {
     }
 
     async execute(client: ExtendedClient) {
-        console.log(`Ready ! Logged in as ${client.user?.tag}`);
+        Logger.info(
+            `Ready ! Logged in as ${client.user?.tag}`,
+            'READY',
+            Color.FgGreen
+        );
     }
 }
