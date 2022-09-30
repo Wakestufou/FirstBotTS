@@ -17,8 +17,7 @@
         "typeRoots": [
             "node_modules/@types", "./src/types"
         ],
-        "sourceMap": false,
-        "baseUrl": "./"
+        "sourceMap": false
     },
     "include": [
         "./**/*.ts"
