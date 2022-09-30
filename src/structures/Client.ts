@@ -40,9 +40,7 @@ export class ExtendedClient extends Client {
                 const command: CommandType = await this._importFile(filePath);
                 if (!command.name) return;
 
-                Logger.info(
-                    `Enregistrement de la commande : ${command.name}...`
-                );
+                Logger.info(`Loading (/) commands : ${command.name}...`);
 
                 this.commands.set(command.name, command);
                 slashCommands.push(command);
@@ -72,9 +70,7 @@ export class ExtendedClient extends Client {
                 process.env.TOKEN
             );
             if (guildID) {
-                Logger.info(
-                    `Enregistrement des commandes pour la guild : ${guildID}`
-                );
+                Logger.info(`Registering (/) commands for guild : ${guildID}`);
 
                 await rest.put(
                     Routes.applicationGuildCommands(
@@ -86,7 +82,7 @@ export class ExtendedClient extends Client {
                     }
                 );
             } else {
-                Logger.info(`Enregistrement des commandes global`);
+                Logger.info(`Registering global (/) commands`);
                 await rest.put(Routes.applicationCommands(process.env.APP_ID), {
                     body: commands,
                 });
@@ -95,7 +91,7 @@ export class ExtendedClient extends Client {
     }
 
     private async _loadEvents() {
-        Logger.info('Enregistrement des events...');
+        Logger.info('Loading events...');
 
         const eventsFiles = await globPromise(
             `${__dirname}\\..\\events\\*{.ts,.js}`.replace(/\\/g, '/')
@@ -108,11 +104,11 @@ export class ExtendedClient extends Client {
                 );
 
                 this.on(event.event, event.run);
-                Logger.info(`Events ${event.event} enregistrés !`);
+                Logger.info(`Events ${event.event} loaded !`);
             })
         )
             .then(() => {
-                Logger.info('Events enregistrés !');
+                Logger.info('All events loaded !');
             })
             .catch((error) => {
                 Logger.fatal(`Error while loading events`, error, 500);

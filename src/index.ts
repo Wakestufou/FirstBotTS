@@ -1,12 +1,12 @@
 import { ExtendedClient } from './structures/Client';
 import Logger from './utils/Logger';
 
-Logger.info('Lancement du programme...');
+Logger.info('Program starting...');
 
-Logger.info('Création du client...');
+Logger.info('Creating the client...');
 export const client = new ExtendedClient();
 
-Logger.info('Client crée !');
+Logger.info('Client created !');
 
-Logger.info('Lancement du bot...');
+Logger.info('Bot starting...');
 client.start();
