@@ -31,23 +31,24 @@ export class ExtendedClient extends Client {
 
     private async _loadCommands() {
         const slashCommands: ApplicationCommandDataResolvable[] = [];
-        const commanndFiles = await globPromise(
+        const commandFiles = await globPromise(
             `${__dirname}\\..\\commands\\*\\*{.ts,.js}`.replace(/\\/g, '/')
         );
 
-        let iteration = 0;
+        Promise.all(
+            commandFiles.map(async (filePath) => {
+                const command: CommandType = await this._importFile(filePath);
+                if (!command.name) return;
 
-        commanndFiles.forEach(async (filePath) => {
-            const command: CommandType = await this._importFile(filePath);
-            if (!command.name) return;
+                Logger.info(
+                    `Enregistrement de la commande : ${command.name}...`
+                );
 
-            Logger.info(`Enregistrement de la commande : ${command.name}...`);
-
-            this.commands.set(command.name, command);
-            slashCommands.push(command);
-
-            iteration++;
-            if (iteration >= commanndFiles.length) {
+                this.commands.set(command.name, command);
+                slashCommands.push(command);
+            })
+        )
+            .then(() => {
                 if (process.argv.includes('--DEV')) {
                     this._registerCommands({
                         commands: slashCommands,
@@ -56,8 +57,10 @@ export class ExtendedClient extends Client {
                 } else {
                     this._registerCommands({ commands: slashCommands });
                 }
-            }
-        });
+            })
+            .catch((error) => {
+                Logger.fatal(`Error while loading (/) commands`, error, 500);
+            });
     }
 
     private async _registerCommands({
@@ -98,16 +101,22 @@ export class ExtendedClient extends Client {
             `${__dirname}\\..\\events\\*{.ts,.js}`.replace(/\\/g, '/')
         );
 
-        eventsFiles.forEach(async (filePath) => {
-            const event: Event<keyof ClientEvents> = await this._importFile(
-                filePath
-            );
+        Promise.all(
+            eventsFiles.map(async (filePath) => {
+                const event: Event<keyof ClientEvents> = await this._importFile(
+                    filePath
+                );
 
-            this.on(event.event, event.run);
-            Logger.info(`Events ${event.event} enregistrés !`);
-        });
-
-        Logger.info('Events enregistrés !');
+                this.on(event.event, event.run);
+                Logger.info(`Events ${event.event} enregistrés !`);
+            })
+        )
+            .then(() => {
+                Logger.info('Events enregistrés !');
+            })
+            .catch((error) => {
+                Logger.fatal(`Error while loading events`, error, 500);
+            });
     }
 
     private async _importFile(filePath: string) {
