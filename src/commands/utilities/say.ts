@@ -1,8 +1,11 @@
 import { Command } from '../../structures/Command';
 import Logger from '../../utils/Logger';
+import path from 'path';
+
 export default new Command({
     name: 'say',
     description: 'Send a message via the bot.',
+    categories: path.dirname(__filename).split(path.sep).pop() as string,
     options: [
         {
             name: 'message',
