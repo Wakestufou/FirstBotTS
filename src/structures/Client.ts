@@ -26,7 +26,12 @@ export class ExtendedClient extends Client {
     start() {
         this._loadEvents();
         this._loadCommands();
-        this.login(process.env.TOKEN);
+
+        if (process.argv.includes('--DEV')) {
+            this.login(process.env.TOKEN_DEV);
+        } else {
+            this.login(process.env.TOKEN);
+        }
     }
 
     private async _loadCommands() {
@@ -65,11 +70,12 @@ export class ExtendedClient extends Client {
         commands,
         guildID,
     }: RegisterCommandsOptions) {
-        if (process.env.TOKEN && process.env.APP_ID) {
-            const rest = new REST({ version: '10' }).setToken(
-                process.env.TOKEN
-            );
+        if (process.env.TOKEN && process.env.APP_ID && process.env.TOKEN_DEV) {
             if (guildID) {
+                const rest = new REST({ version: '10' }).setToken(
+                    process.env.TOKEN_DEV
+                );
+
                 Logger.info(`Registering (/) commands for guild : ${guildID}`);
 
                 await rest.put(
@@ -82,6 +88,10 @@ export class ExtendedClient extends Client {
                     }
                 );
             } else {
+                const rest = new REST({ version: '10' }).setToken(
+                    process.env.TOKEN
+                );
+
                 Logger.info(`Registering global (/) commands`);
                 await rest.put(Routes.applicationCommands(process.env.APP_ID), {
                     body: commands,
