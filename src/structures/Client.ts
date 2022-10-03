@@ -70,33 +70,34 @@ export class ExtendedClient extends Client {
         commands,
         guildID,
     }: RegisterCommandsOptions) {
-        if (process.env.TOKEN && process.env.APP_ID && process.env.TOKEN_DEV) {
-            if (guildID) {
-                const rest = new REST({ version: '10' }).setToken(
-                    process.env.TOKEN_DEV
-                );
+        if (guildID) {
+            const rest = new REST({ version: '10' }).setToken(
+                process.env.TOKEN_DEV as string
+            );
 
-                Logger.info(`Registering (/) commands for guild : ${guildID}`);
+            Logger.info(`Registering (/) commands for guild : ${guildID}`);
 
-                await rest.put(
-                    Routes.applicationGuildCommands(
-                        process.env.APP_ID,
-                        guildID
-                    ),
-                    {
-                        body: commands,
-                    }
-                );
-            } else {
-                const rest = new REST({ version: '10' }).setToken(
-                    process.env.TOKEN
-                );
-
-                Logger.info(`Registering global (/) commands`);
-                await rest.put(Routes.applicationCommands(process.env.APP_ID), {
+            await rest.put(
+                Routes.applicationGuildCommands(
+                    process.env.APP_ID_DEV as string,
+                    guildID
+                ),
+                {
                     body: commands,
-                });
-            }
+                }
+            );
+        } else {
+            const rest = new REST({ version: '10' }).setToken(
+                process.env.TOKEN as string
+            );
+
+            Logger.info(`Registering global (/) commands`);
+            await rest.put(
+                Routes.applicationCommands(process.env.APP_ID as string),
+                {
+                    body: commands,
+                }
+            );
         }
     }
 
